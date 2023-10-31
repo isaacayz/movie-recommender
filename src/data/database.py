@@ -1,9 +1,14 @@
 import psycopg2
+import constants
+
+password = constants.password
+database = constants.db_name
+
 
 db_params = {
-    'database': 'movie_db',
+    'database': database,
     'user': 'postgres',
-    'password': 'P@$$w0rd',
+    'password': password,
     'host' : 'localhost',
     'port' : '5432'
 }
@@ -16,3 +21,4 @@ cursor = conn.cursor()
 def closeConnection():
     cursor.close()
     conn.close()
+    print("DB connection closed successfully!")
