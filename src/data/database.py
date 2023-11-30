@@ -1,9 +1,12 @@
 import psycopg2
-import constants
+import constants as constants
+
 
 password = constants.password
 database = constants.db_name
 
+class TestDb():
+    pass
 
 db_params = {
     'database': database,
@@ -19,6 +22,7 @@ cursor = conn.cursor()
 
 
 def closeConnection():
+    conn.commit()
     cursor.close()
     conn.close()
     print("DB connection closed successfully!")
