@@ -2,7 +2,6 @@ from psycopg2 import sql
 import pandas as pd
 import sys
 from src.exceptions import CustomException
-from src.constants import Constants
 from src.data import database
 
 
@@ -16,12 +15,11 @@ class DataPipeline:
 
     def fetchMovies(self):
         try:
-            select_query = sql.SQL('SELECT {} FROM {} AS r LEFT JOIN movies AS m on r.movieId = m.movieId LIMIT 1').format(
+            select_query = sql.SQL('SELECT {} FROM {} AS r LEFT JOIN movies AS m on r.movieId = m.movieId LIMIT 1000').format(
                 sql.SQL(',').join(map(sql.Identifier, self.columns)),
                 sql.Identifier(self.rating)
             )
 
-            # f"SELECT userId, movieId, title, rating, genre, timestamp FROM ratings LEFT JOIN movies on ratings.movieId = movies.movieId LIMIT 3"
             cursor.execute(select_query)
             testData = cursor.fetchall()
             return testData
@@ -45,6 +43,6 @@ class DataPipeline:
 
     def covertMoviesToDf(self, data):
         df = pd.DataFrame(data, index=None, columns=self.columns)
-        print(df)
+        #print(df)
         return df
     

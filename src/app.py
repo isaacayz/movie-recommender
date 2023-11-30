@@ -1,5 +1,7 @@
 from src.features.build_features import DataPipeline
 from src.data import database as db
+#from src.visualization import visualize
+import time
 
 
 columns = ['userid', 'rating', 'title', 'genre', 'timestamp']
@@ -13,10 +15,9 @@ data = DataPipeline(
     rating=rating
 )
 
+df = data.covertMoviesToDf(data.convertToDate(data.fetchMovies()))
 
 
 if __name__ == '__main__':
-    #tempMovies = data.fetchMovies()
-    #data.convertToDate(tempMovies)
-    data.covertMoviesToDf(data.convertToDate(data.fetchMovies()))
+    print(df[['rating', 'userid']].groupby('userid',).mean())
     db.closeConnection()
