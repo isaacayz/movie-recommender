@@ -1,12 +1,11 @@
 import psycopg2
-import constants as constants
+import sys
+#sys.path.append('/Users/isaacige/Documents/Code/DS&ML/MovieRecommender/src/constants')
+from constants import Constants
 
 
-password = constants.password
-database = constants.db_name
-
-class TestDb():
-    pass
+password = Constants.password
+database = Constants.db_name
 
 db_params = {
     'database': database,
@@ -26,3 +25,7 @@ def closeConnection():
     cursor.close()
     conn.close()
     print("DB connection closed successfully!")
+
+
+if __name__ == '__main__':
+    closeConnection()
