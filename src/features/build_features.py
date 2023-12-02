@@ -46,3 +46,16 @@ class DataPipeline:
         #print(df)
         return df
     
+
+    def fetchMoviesDetails(self):
+        try:
+            select_query = sql.SQL('SELECT year, r.userid, rating, r.timestamp, tag, relevance FROM {} AS m JOIN ratings AS r ON m.movieId = r.movieId JOIN genome_scores AS gs ON gs.movieId = gs.movieId JOIN tags as t ON r.userId = t.userId LIMIT 20').format(
+                #sql.SQL(',').join(map(sql.Identifier, c)),
+                sql.Identifier('movies')
+            )
+            cursor.execute(select_query)
+            data = cursor.fetchall()
+
+        except Exception as e:
+            raise CustomException(e, sys)
+    
