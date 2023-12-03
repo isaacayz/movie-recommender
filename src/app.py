@@ -4,29 +4,27 @@ from src.visualization.visualize import VisualPipeline
 import time
 
 
+
 columns = ['userid', 'rating', 'title', 'genre', 'timestamp']
-condition = 'r.movieid = m.movieid'
-rating = "ratings"
-movie = "movies"
+movieColumns = ['ReleasedYear', 'UserRated', 'Rating', 'Tag', 'GS_Relevance', 'Timestamp']
+movieData = DataPipeline(columns=movieColumns)
 
 def getMean():
     data = DataPipeline(
-            final=[],
             columns= columns,
-            rating=rating
             )
 
-    df = data.covertMoviesToDf(data.convertToDate(data.fetchMovies()))
+    df = data.covertMoviesToDf(data.dateConversion(data.fetchMovies()))
     finalAnswer = df[['rating', 'userid']].groupby('userid').mean()
 
     return finalAnswer
 
 
-
+data =  movieData.dateTimeExtraction(movieData.covertMoviesToDf(movieData.dateConversion(movieData.fetchMoviesDetails())))
 #df = data.covertMoviesToDf(data.convertToDate(data.fetchMovies()))
 
 
 if __name__ == '__main__':
     #print(df[['rating', 'userid']].groupby('userid',).mean())
-    print(getMean())
+    print(data)
     db.closeConnection()
