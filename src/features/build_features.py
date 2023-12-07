@@ -7,6 +7,9 @@ from src.data import database
 
 
 cursor = database.cursor
+columns = ['userid', 'rating', 'title', 'genre', 'timestamp']
+movieColumns = ['Rating_User','Rating','Title','ReleasedYear', 'Timestamp']
+
 
 class DataPipeline:
     def __init__(self, columns : list) -> None:
@@ -53,17 +56,19 @@ class DataPipeline:
         data['Date'] = data['Timestamp'].apply(lambda x : x.split()[0])
         data['Time'] = data['Timestamp'].apply(lambda x : x.split()[1])
 
+        data.set_index('Timestamp', inplace=True)
+
         return data
 
     
-    def covertMoviesToDf(self, data) -> pd.DataFrame:
+    def convertMoviesToDf(self, data) -> pd.DataFrame:
         df = pd.DataFrame(data, index=None, columns=self.columns)
         return df
     
 
     def fetchMoviesDetails(self) -> list:
         try:
-            select_query = sql.SQL('SELECT year, r.userid, rating, tag, relevance, r.timestamp FROM {} AS m JOIN ratings AS r ON m.movieId = r.movieId JOIN genome_scores AS gs ON gs.movieId = gs.movieId JOIN tags as t ON r.userId = t.userId LIMIT 10').format(
+            select_query = sql.SQL('SELECT r.userid, rating, m.title, year, r.timestamp FROM {} AS m JOIN ratings AS r ON r.movieId = m.movieId LIMIT 10000').format(
                 #sql.SQL(',').join(map(sql.Identifier, c)),
                 sql.Identifier('movies')
             )
@@ -75,3 +80,8 @@ class DataPipeline:
         
         return data
     
+
+
+dp = DataPipeline(columns=movieColumns)
+data =  dp.dateTimeExtraction(dp.convertMoviesToDf(dp.dateConversion(dp.fetchMoviesDetails())))
+
